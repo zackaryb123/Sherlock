@@ -115,17 +115,19 @@ export const setError = (message) => dispatch => {
 
 export const loginUser = ({ email, password }) => {
   return async (dispatch) => {
-    dispatch(loginStatusChanged('checking'));
+    await loginStatusChanged(dispatch, 'checking');
     dispatch({ type: LOGIN_USER });
     try {
       let user = await firebase.auth().signInWithEmailAndPassword(email, password);
       console.log('user logged successfully');
-      loginUserSuccess(dispatch, user);
+      await loginUserSuccess(dispatch, user);
+      await loginStatusChanged(dispatch, 'loggedin')
     }
     catch (error) {
       console.log(error);
       let err_message = error.message;
-      loginUserFail(dispatch, err_message);
+      await loginUserFail(dispatch, err_message);
+      await loginStatusChanged(dispatch, 'notloggedin')
     }
   };
 };
@@ -146,12 +148,14 @@ export const resetUser = ({ email }) => {
 
 export const logoutUser = () => {
   return async (dispatch) => {
-    dispatch(loginStatusChanged('checking'));
+    await loginStatusChanged(dispatch, 'checking');
     try {
       await firebase.auth().signOut();
+      await loginUserSuccess(dispatch, null);
+      await loginStatusChanged(dispatch, 'notloggedin');
     } catch (error) {
       console.log(error);
-      dispatch(loginStatusChanged('loggedin'));
+      await loginStatusChanged(dispatch, 'loggedin');
     }
   };
 
@@ -160,7 +164,7 @@ export const logoutUser = () => {
 export const signupUser = ({ email, password, phone, firstname, lastname  }) => {
   return async (dispatch) => {
 
-    dispatch(loginStatusChanged('checking'));
+    await loginStatusChanged(dispatch, 'checking');
     dispatch({ type: SIGNUP_USER });
     var displayName = firstname + ' ' + lastname;
     var phoneNumber = '+1'+ phone;
@@ -179,7 +183,8 @@ export const signupUser = ({ email, password, phone, firstname, lastname  }) => 
         lastname,
         displayName
       });
-      loginUserSuccess(dispatch, user);
+      await loginUserSuccess(dispatch, user);
+      await loginStatusChanged(dispatch, 'notloggedin');
       dispatch(errorSet('Welcome to our Online Shop'));
     }
     catch (error) {
@@ -192,24 +197,16 @@ export const signupUser = ({ email, password, phone, firstname, lastname  }) => 
 
 // Get message from firebase and do the reset
 export const authStateChanged = () => {
-  return ( dispatch ) => {
+  return async ( dispatch ) => {
     firebase.auth().onAuthStateChanged((user) => {
       console.log("USER: ", user);
         if (user) {
           console.log('Authactions: Line 260: Dispatched loggedin');
           loginUserSuccess(dispatch, user);
           loginStatusChanged(dispatch,'loggedin');
-          // let currentNavState = NavigatorService.getCurrentRoute();
-          // if (currentNavState.routeName !== 'main_screen') {
-          //   NavigatorService.reset('main_screen');
-          // }
         } else {
          console.log('Authactions: Line 216: Dispatched not loggedin');
          loginStatusChanged(dispatch,'notloggedin');
-          // let currentNavState = NavigatorService.getCurrentRoute();
-          // if (currentNavState.routeName !== 'welcome_screen') {
-          //   NavigatorService.reset('welcome_screen');
-          // }
         }
       });
   }

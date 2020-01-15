@@ -26,7 +26,7 @@ const INITIAL_STATE = {
   user: null,
   error: '',
   fontLoaded: false,
-  loginStatus: 'initial',
+  loginStatus: 'checking',
   loadWelcome: false
 };
 
@@ -63,9 +63,7 @@ export default (state = INITIAL_STATE, action) => {
     case LOGIN_USER:
       return { ...state, error: '' };
     case LOGIN_STATUS_CHANGED:
-      console.log('AuthReducer: LOGIN_STATUS_CHANGED');
       if (action.payload === 'notloggedin') {
-        console.log('Auth reducer: notloggedin');
         return { ...state, loginStatus: action.payload, email: '', password: '', phone:'', firstname: '', lastname: '', error:'', user: null };
       } else {
         return { ...state, loginStatus: action.payload};

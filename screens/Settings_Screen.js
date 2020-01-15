@@ -27,6 +27,7 @@ import {Avatar} from './../components';
 import {GradientButton} from './../components/';
 import {FontAwesome} from './../assets/icons';
 import LoadingSpinner from './../components/Loading/LoadingSpinner';
+import NavigatorService from './../utils/navigator';
 
 
 
@@ -64,12 +65,22 @@ class Settings_Screen extends Component {
   }
 
   componentWillMount() {
-    this.props.userDetailsFetch();
+    this.props.loginStatus === 'loggedin' ? this.props.userDetailsFetch() : null;
     console.log('userdetails');
     console.log(this.props.userdetails);
     if ( this.props.userdetails ) {
       const {myfirstname} = this.props.userdetails;
       this.setState({ firstName: myfirstname });
+    }
+  }
+
+  componentDidMount() {
+    console.log('-----SETTING SCREEN MOUNTED----------');
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.props.loginStatus === 'notloggedin') {
+      NavigatorService.reset('login_screen');
     }
   }
 
@@ -82,14 +93,12 @@ class Settings_Screen extends Component {
     if (!userdetails) return <View style={[styles.container, styles.horizontal]}><ActivityIndicator size="large" color="#0000ff" /></View>;
     return (
         <View style={styles.container}>
-          <View style={styles.header}></View>
           <Image style={styles.avatar} source={{uri: 'https://bootdey.com/img/Content/avatar/avatar6.png'}}/>
           <View style={styles.body}>
             <View style={styles.bodyContent}>
               <Text style={styles.name}>{userdetails.firstname}</Text>
               <Text style={styles.info}>{userdetails.email}</Text>
               <Text style={styles.description}>Lorem ipsum dolor sit amet, saepe sapientem eu nam. Qui ne assum electram expetendis, omittam deseruisse consequuntur ius an,</Text>
-
               <TouchableOpacity style={styles.buttonContainer}>
                 <Text>Opcion 1</Text>
               </TouchableOpacity>
@@ -138,8 +147,7 @@ let styles = RkStyleSheet.create(theme => ({
     borderColor: "white",
     marginBottom:10,
     alignSelf:'center',
-    position: 'absolute',
-    marginTop:130
+    marginTop:10
   },
   // name:{
   //   fontSize:22,
@@ -150,7 +158,6 @@ let styles = RkStyleSheet.create(theme => ({
     marginTop:40,
   },
   bodyContent: {
-    flex: 1,
     alignItems: 'center',
     padding:30,
   },
@@ -183,9 +190,10 @@ let styles = RkStyleSheet.create(theme => ({
   },
 }));
 
-const mapStateToProps = ({ userData }) => {
+const mapStateToProps = ({ userData, auth }) => {
   const { userdetails } = userData;
-  return { userdetails };
+  const {loginStatus } = auth;
+  return { userdetails, loginStatus };
 };
 
 export default connect(mapStateToProps, {

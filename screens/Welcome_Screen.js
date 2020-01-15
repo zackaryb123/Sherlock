@@ -49,7 +49,7 @@ class Welcome_Screen extends Component {
 
   render() {
     console.log('Login Status: ', this.props.loginStatus);
-    if (this.props.loginStatus === 'initial') {
+    if (this.props.loginStatus === 'checking') {
       return ( <AppSpinner /> );
     }
     return (

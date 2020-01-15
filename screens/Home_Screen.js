@@ -24,6 +24,7 @@ import {getArticles, setCategory} from "../actions/action.news.api";
 import connect from "react-redux/es/connect/connect";
 import {errorSet} from "../actions/action.auth";
 import {authStateChanged} from "../actions/action.auth";
+import NavigatorService from "../utils/navigator";
 
 
 class Home_Screen extends Component {
@@ -54,7 +55,7 @@ class Home_Screen extends Component {
   }
 
   componentDidMount() {
-    console.log('-----HOME SCREEN----------');
+    console.log('-----HOME SCREEN MOUNTED----------');
   }
 
   handleCategorySelect(category) {
@@ -102,11 +103,11 @@ class Home_Screen extends Component {
 let styles = RkStyleSheet.create(theme => ({
   container:{
     flex:1,
-    marginTop:20,
+    marginTop:0,
     backgroundColor:"#ebf0f7"
   },
   contentList:{
-    flex:1,
+    flex:1
   },
   cardContent: {
     marginLeft:20,
@@ -132,7 +133,8 @@ let styles = RkStyleSheet.create(theme => ({
 
     marginLeft: 20,
     marginRight: 20,
-    marginTop:20,
+    marginTop:10,
+    marginBottom:10,
     backgroundColor:"white",
     padding: 10,
     flexDirection:'row',

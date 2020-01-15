@@ -81,19 +81,18 @@ class Login extends Component {
 
   render() {
 
-      android_s_c_marginTop = (this.state.keyboardflag) ? 30 : 0; // Platform.OS === 'android' &&
+      let android_s_c_marginTop = (this.state.keyboardflag) ? 30 : 0; // Platform.OS === 'android' &&
       let screen_width = Dimensions.get('window').width;
       let FbButtonSize = { marginHorizontal: 20 };
+      let keyboardUp_justifyContent = 'space-between';
 
       if ( this.props.loginStatus != 'fbchecking' ) {
           // if login status is not fbchecking then react to keyboard up as usual
           keyboardUp_justifyContent = (this.state.keyboardflag) ? 'flex-start' : 'space-between';
-      }
-      else {
+      } else {
         console.log(this.props.loginStatus);
         // if fbchecking act like the keyboard is down even if it is up
         android_s_c_marginTop = 0;
-        keyboardUp_justifyContent = 'space-between';
       }
 
       // for the case where there is signup and showemailpwdstate button is not pressed
@@ -102,7 +101,7 @@ class Login extends Component {
       }
 
       let keyboardUp_styles_content = {justifyContent: keyboardUp_justifyContent};
-      android_styles_container = {marginTop: android_s_c_marginTop};
+      let android_styles_container = {marginTop: android_s_c_marginTop};
       /*
       console.log('This is Login.js +++++++++++++++++++++++');
       console.log(this.props.emailPwdBtnStr);

@@ -12,6 +12,19 @@ class Login_Screen extends Component {
     header: null,
   };
 
+  componentDidMount() {
+    console.log('-----LOGIN SCREEN MOUNTED----------');
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    console.log('-----LOGIN SCREEN UPDATED----------');
+    console.log(prevProps);
+    console.log(this.props.loginStatus);
+    if (this.props.loginStatus === 'loggedin') {
+      NavigatorService.reset('main_screen');
+    }
+  }
+
   render() {
     console.log('Login_Screen:Line 15: Rendering Login_Screen');
       return (
@@ -28,6 +41,12 @@ class Login_Screen extends Component {
   }
 }
 
-export default connect(null, {
+const mapStateToProps = ({ auth }) => {
+  const { loginStatus, fontLoaded } = auth;
+  return { loginStatus, fontLoaded };
+};
+
+
+export default connect(mapStateToProps, {
   facebookSignin
 })(Login_Screen);

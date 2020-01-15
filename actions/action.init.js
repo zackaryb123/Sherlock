@@ -1,6 +1,6 @@
 import * as firebase from 'firebase';
 import NavigatorService from "../utils/navigator";
-import {loginUserSuccess} from "./action.auth";
+import {loginUserSuccess, loginStatusChanged} from "./action.auth";
 
 export const initApp = () => dispatch => {
 
@@ -42,7 +42,7 @@ export const initApp = () => dispatch => {
         loginStatusChanged(dispatch, 'loggedin');
       } else {
         console.log('checkAuthStateChange: emailVerified: FAIL', auth);
-        dispatch(loginStatusChanged('notloggedin'));
+        loginStatusChanged(dispatch, 'notloggedin');
       }
     });
   }
