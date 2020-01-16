@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import firebase from 'firebase';
 import {
   ScrollView,
   View,
@@ -65,7 +66,7 @@ class Settings_Screen extends Component {
   }
 
   componentWillMount() {
-    this.props.loginStatus === 'loggedin' ? this.props.userDetailsFetch() : null;
+    this.props.userDetailsFetch();
     console.log('userdetails');
     console.log(this.props.userdetails);
     if ( this.props.userdetails ) {
@@ -79,9 +80,16 @@ class Settings_Screen extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.props.loginStatus === 'notloggedin') {
-      NavigatorService.reset('login_screen');
-    }
+    firebase.auth().onAuthStateChanged((auth) => {
+      if (auth) {
+
+      } else {
+        NavigatorService.reset('login_screen');
+      }
+    });
+    // if (this.props.loginStatus === 'notloggedin') {
+    //   NavigatorService.reset('login_screen');
+    // }
   }
 
   render() {

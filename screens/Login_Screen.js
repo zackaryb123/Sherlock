@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Login from './../components/Login/Login';
 import { facebookSignin } from '../actions';
 import NavigatorService from './../utils/navigator';
+import firebase from "firebase";
 
 
 class Login_Screen extends Component {
@@ -18,11 +19,15 @@ class Login_Screen extends Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     console.log('-----LOGIN SCREEN UPDATED----------');
-    console.log(prevProps);
-    console.log(this.props.loginStatus);
-    if (this.props.loginStatus === 'loggedin') {
-      NavigatorService.reset('main_screen');
-    }
+    firebase.auth().onAuthStateChanged((auth) => {
+      if (auth) {
+        NavigatorService.reset('main_screen');
+      } else {
+      }
+    });
+    // if (this.props.loginStatus === 'loggedin') {
+    //   NavigatorService.reset('main_screen');
+    // }
   }
 
   render() {
@@ -42,8 +47,8 @@ class Login_Screen extends Component {
 }
 
 const mapStateToProps = ({ auth }) => {
-  const { loginStatus, fontLoaded } = auth;
-  return { loginStatus, fontLoaded };
+  const { loginStatus } = auth;
+  return { loginStatus };
 };
 
 

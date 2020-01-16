@@ -115,19 +115,19 @@ export const setError = (message) => dispatch => {
 
 export const loginUser = ({ email, password }) => {
   return async (dispatch) => {
-    await loginStatusChanged(dispatch, 'checking');
+    loginStatusChanged(dispatch, 'checking');
     dispatch({ type: LOGIN_USER });
     try {
       let user = await firebase.auth().signInWithEmailAndPassword(email, password);
       console.log('user logged successfully');
-      await loginUserSuccess(dispatch, user);
-      await loginStatusChanged(dispatch, 'loggedin')
+      loginUserSuccess(dispatch, user);
+      loginStatusChanged(dispatch, 'loggedin');
     }
     catch (error) {
       console.log(error);
       let err_message = error.message;
-      await loginUserFail(dispatch, err_message);
-      await loginStatusChanged(dispatch, 'notloggedin')
+      loginUserFail(dispatch, err_message);
+      loginStatusChanged(dispatch, 'notloggedin')
     }
   };
 };
@@ -148,14 +148,14 @@ export const resetUser = ({ email }) => {
 
 export const logoutUser = () => {
   return async (dispatch) => {
-    await loginStatusChanged(dispatch, 'checking');
+    loginStatusChanged(dispatch, 'checking');
     try {
       await firebase.auth().signOut();
-      await loginUserSuccess(dispatch, null);
-      await loginStatusChanged(dispatch, 'notloggedin');
+      loginStatusChanged(dispatch, 'notloggedin');
+      loginUserSuccess(dispatch, null);
     } catch (error) {
       console.log(error);
-      await loginStatusChanged(dispatch, 'loggedin');
+      loginStatusChanged(dispatch, 'loggedin');
     }
   };
 
@@ -164,7 +164,7 @@ export const logoutUser = () => {
 export const signupUser = ({ email, password, phone, firstname, lastname  }) => {
   return async (dispatch) => {
 
-    await loginStatusChanged(dispatch, 'checking');
+    loginStatusChanged(dispatch, 'checking');
     dispatch({ type: SIGNUP_USER });
     var displayName = firstname + ' ' + lastname;
     var phoneNumber = '+1'+ phone;
@@ -183,8 +183,8 @@ export const signupUser = ({ email, password, phone, firstname, lastname  }) => 
         lastname,
         displayName
       });
-      await loginUserSuccess(dispatch, user);
-      await loginStatusChanged(dispatch, 'notloggedin');
+      loginUserSuccess(dispatch, user);
+      loginStatusChanged(dispatch, 'notloggedin');
       dispatch(errorSet('Welcome to our Online Shop'));
     }
     catch (error) {

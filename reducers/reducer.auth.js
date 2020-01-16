@@ -26,7 +26,7 @@ const INITIAL_STATE = {
   user: null,
   error: '',
   fontLoaded: false,
-  loginStatus: 'checking',
+  loginStatus: 'notloggedin',
   loadWelcome: false
 };
 

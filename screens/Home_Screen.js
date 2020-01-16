@@ -56,6 +56,7 @@ class Home_Screen extends Component {
 
   componentDidMount() {
     console.log('-----HOME SCREEN MOUNTED----------');
+    console.log(this.props.loginStatus);
   }
 
   handleCategorySelect(category) {
@@ -187,8 +188,10 @@ let styles = RkStyleSheet.create(theme => ({
   // }
 }));
 
-const mapStateToProps = state => ({
-});
+const mapStateToProps = ({ auth }) => {
+  const { loginStatus } = auth;
+  return { loginStatus };
+};
 
 export default connect(mapStateToProps, {
   errorSet, getArticles, setCategory, authStateChanged
