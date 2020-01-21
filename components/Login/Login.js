@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Keyboard, Dimensions, LayoutAnimation } from 'react-native';
 import { connect } from 'react-redux';
 
-import ErrorMessage from './../ErrorMessage';
+import ErrorMessage from '../ModalMessage';
 import LoginHeaderImage from './LoginHeaderImage';
 import EmailTextInput from './EmailTextInput';
 import PwdTextInput from './PwdTextInput';

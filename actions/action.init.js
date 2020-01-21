@@ -38,11 +38,11 @@ export const initApp = () => dispatch => {
     auth.onAuthStateChanged(function (auth) {
       if (auth) {
         console.log('checkAuthStateChange: SUCCESS', auth);
-        loginUserSuccess(dispatch, auth);
-        loginStatusChanged(dispatch, 'loggedin');
+        dispatch(loginUserSuccess(auth));
+        dispatch(loginStatusChanged('loggedin'));
       } else {
         console.log('checkAuthStateChange: emailVerified: FAIL', auth);
-        loginStatusChanged(dispatch, 'notloggedin');
+        dispatch(loginStatusChanged('notloggedin'));
       }
     });
   }

@@ -20,7 +20,7 @@ import EmailPwdButton from './../components/Login/EmailPwdButton';
 import FooterNavButtons from './../components/Login/FooterNavButtons';
 
 
-import ErrorMessage from './../components/ErrorMessage';
+import ErrorMessage from '../components/ModalMessage';
 import { FormLabel, FormInput, FormValidationMessage, Button, Divider, SocialIcon, Icon } from 'react-native-elements';
 import {scale, scaleModerate, scaleVertical} from './../utils/scale';
 import NavigatorService from './../utils/navigator';

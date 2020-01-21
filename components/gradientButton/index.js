@@ -36,13 +36,8 @@ export class GradientButton extends RkComponent {
     colors = this.props.colors ? this.props.colors : colors;
 
     return (
-      <RkButton rkType='stretch'
-                style={[button, style]}
-                {...otherProps}>
-        <LinearGradient colors={STYLES[THEME].GRADIANT}
-                        start={{x: 0.0, y: 0.5}}
-                        end={{x: 1, y: 0.5}}
-                        style={[gradient]}>
+      <RkButton rkType='stretch' style={[button, style]} {...otherProps}>
+        <LinearGradient colors={STYLES[THEME].GRADIANT} start={{x: 0.0, y: 0.5}} end={{x: 1, y: 0.5}} style={[gradient]}>
           {this.renderContent(textStyle)}
         </LinearGradient>
       </RkButton>

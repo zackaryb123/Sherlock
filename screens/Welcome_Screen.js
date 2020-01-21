@@ -12,7 +12,7 @@ import {PaginationIndicator} from './../components';
 import { loginStatusChanged, authStateChanged, fontLoadedChanged } from '../actions';
 import AppSpinner from './../components/Loading/AppSpinner';
 import NavigatorService from './../utils/navigator';
-import ErrorMessage from './../components/ErrorMessage';
+import ErrorMessage from '../components/ModalMessage';
 import {initApp} from "../actions/action.init";
 
 class Welcome_Screen extends Component {

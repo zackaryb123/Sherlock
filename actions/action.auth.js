@@ -77,7 +77,7 @@ export const lastnameChanged = (text) => {
   };
 };
 
-export const loginStatusChanged = (dispatch, text) => {
+export const loginStatusChanged = (text) => dispatch => {
   console.log ("login status : " + text);
   dispatch({
     type: LOGIN_STATUS_CHANGED,
@@ -94,14 +94,14 @@ export const loadWelcomeChanged = (text) => {
 };
 
 
-export const loginUserFail = (dispatch, err_message) => {
+export const loginUserFail = (err_message) => dispatch => {
   dispatch({
     type: LOGIN_USER_FAIL,
     payload: err_message
   });
 };
 
-export const loginUserSuccess = (dispatch, user) => {
+export const loginUserSuccess = (user) => dispatch => {
   dispatch({
     type: LOGIN_USER_SUCCESS,
     payload: user
@@ -115,19 +115,17 @@ export const setError = (message) => dispatch => {
 
 export const loginUser = ({ email, password }) => {
   return async (dispatch) => {
-    loginStatusChanged(dispatch, 'checking');
-    dispatch({ type: LOGIN_USER });
+    dispatch(loginStatusChanged('checking'));
     try {
       let user = await firebase.auth().signInWithEmailAndPassword(email, password);
       console.log('user logged successfully');
-      loginUserSuccess(dispatch, user);
-      loginStatusChanged(dispatch, 'loggedin');
-    }
-    catch (error) {
+      dispatch(loginUserSuccess(user));
+      dispatch(loginStatusChanged('loggedin'));
+    } catch (error) {
       console.log(error);
       let err_message = error.message;
-      loginUserFail(dispatch, err_message);
-      loginStatusChanged(dispatch, 'notloggedin')
+      dispatch(loginUserFail(err_message));
+      dispatch(loginStatusChanged('notloggedin'));
     }
   };
 };
@@ -148,14 +146,14 @@ export const resetUser = ({ email }) => {
 
 export const logoutUser = () => {
   return async (dispatch) => {
-    loginStatusChanged(dispatch, 'checking');
+    dispatch(loginStatusChanged('checking'));
     try {
       await firebase.auth().signOut();
-      loginStatusChanged(dispatch, 'notloggedin');
-      loginUserSuccess(dispatch, null);
+      dispatch(loginStatusChanged('notloggedin'));
+      dispatch(loginUserSuccess(null));
     } catch (error) {
       console.log(error);
-      loginStatusChanged(dispatch, 'loggedin');
+      dispatch(loginStatusChanged('loggedin'));
     }
   };
 
@@ -163,31 +161,24 @@ export const logoutUser = () => {
 
 export const signupUser = ({ email, password, phone, firstname, lastname  }) => {
   return async (dispatch) => {
-
-    loginStatusChanged(dispatch, 'checking');
+    dispatch(loginStatusChanged('checking'));
     dispatch({ type: SIGNUP_USER });
-    var displayName = firstname + ' ' + lastname;
-    var phoneNumber = '+1'+ phone;
-    console.log(email);
-    console.log(password);
-    console.log(displayName);
-    console.log(phoneNumber);
+    let displayName = firstname + ' ' + lastname;
 
     try {
       let user = await firebase.auth().createUserWithEmailAndPassword(email, password);
+      let uid = user.user.uid;
       user.user.displayName = displayName;
       firebase.database().ref(`/users/${user.user.uid}/userDetails`).set({
-        email,
-        phone,
-        firstname,
-        lastname,
-        displayName
+        email, phone, firstname, lastname, displayName
       });
-      loginUserSuccess(dispatch, user);
-      loginStatusChanged(dispatch, 'notloggedin');
-      dispatch(errorSet('Welcome to our Online Shop'));
-    }
-    catch (error) {
+      // firebase.database().ref(`/userids/${email}`).set({
+      //   uid
+      // });
+      dispatch(loginUserSuccess(user));
+      dispatch(loginStatusChanged('notloggedin'));
+      dispatch(errorSet('Welcome to Sherlock!'));
+    } catch (error) {
       console.log("FAIL: ", error);
       loginUserFail(dispatch);
     }
@@ -202,11 +193,11 @@ export const authStateChanged = () => {
       console.log("USER: ", user);
         if (user) {
           console.log('Authactions: Line 260: Dispatched loggedin');
-          loginUserSuccess(dispatch, user);
-          loginStatusChanged(dispatch,'loggedin');
+          dispatch(loginUserSuccess(user));
+          dispatch(loginStatusChanged('loggedin'));
         } else {
          console.log('Authactions: Line 216: Dispatched not loggedin');
-         loginStatusChanged(dispatch,'notloggedin');
+         dispatch(loginStatusChanged('notloggedin'));
         }
       });
   }

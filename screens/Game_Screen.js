@@ -3,16 +3,18 @@ import {connect} from 'react-redux';
 import {
   ActivityIndicator,
   Button, Linking,
-  View, Image, TouchableOpacity,
-  TouchableHighlight
+  View, TouchableOpacity,
+  TouchableHighlight, Image
 } from 'react-native';
 import Swiper from 'react-native-swiper';
-import {Card, ListItem, CheckBox } from 'react-native-elements';
+import {Card, ListItem, CheckBox, Overlay } from 'react-native-elements';
 import {GradientButton} from "../components";
 import {RkStyleSheet} from "react-native-ui-kitten";
 import {setError} from "../actions/action.auth";
+import {userPointsFetch} from '../actions/action.user';
 import {getArticles, getOptions} from "../actions/action.news.api";
-import {addPoints, minusPoints} from "../actions";
+import {addPoints, errorSet, minusPoints} from "../actions";
+import ModalMessage from "../components/ModalMessage";
 
 class Game_Screen extends Component {
   constructor(props) {
@@ -24,18 +26,19 @@ class Game_Screen extends Component {
       options: null,
       loadingOptions: true,
       checked: null,
-      answer: null
+      answer: null,
+      guessed: false
     }
   }
 
   componentDidMount() {
-    console.log("AUTH: ", this.props.auth);
     const { articles } = this.props;
     const { swipeIndex } = this.state;
     if (articles) {
       this.setState({ loadingOptions: true, answer: articles[swipeIndex].title });
       this.props.getOptions(articles[swipeIndex].keyValues, articles[swipeIndex].title);
     }
+    this.props.userPointsFetch();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -43,15 +46,7 @@ class Game_Screen extends Component {
     if (this.props.articles !== nextProps.articles) {
       this.setState({ articles: nextProps.articles, answer: nextProps.articles[swipeIndex].title, loadingOptions: true });
     } else if (this.props.options !== nextProps.options) {
-      console.log("OPTIONS: ", nextProps.options);
       this.setState({ options: nextProps.options })
-    }
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    switch (true) {
-      default:
-        return true;
     }
   }
 
@@ -75,59 +70,60 @@ class Game_Screen extends Component {
   onSwipe = (swipeIndex) => {
     const { articles } = this.state;
       this.props.getOptions(articles[swipeIndex].keyValues, articles[swipeIndex].title);
-      this.setState({swipeIndex: swipeIndex, loadingOptions: true, answer: articles[swipeIndex].title});
+      this.setState({swipeIndex: swipeIndex, loadingOptions: true, answer: articles[swipeIndex].title, checked: null, guessed: false});
   };
 
   handleGuess() {
     const { answer, checked } = this.state;
-    const { user } = this.props;
-    console.log("Answer: ", answer);
-    console.log("Checked: ", checked);
+    const { auth } = this.props;
+
     if (answer === checked) {
-      console.log('Correct!!!');
-      this.props.addPoints(user.uid, 10);
+      this.props.addPoints(auth.uid, 10);
+      this.props.errorSet('Correct!!');
     } else {
-      console.log('Incorrect...');
-      this.props.minusPoints(user.uid, 10);
+      this.props.minusPoints(auth.uid, 10);
+      this.props.errorSet('Incorrect!!');
     }
+    this.setState({guessed: true});
   }
 
   render() {
-    const { loadingOptions, articles, options, checked } = this.state;
+    const { loadingOptions, articles, options, checked, guessed } = this.state;
     if (!articles) return <View style={[styles.container, styles.horizontal]}><ActivityIndicator size="large" color="#0000ff" /></View>;
     return (
-      <Swiper loop={false} onIndexChanged={this.onSwipe} showsButtons>
-        {articles && articles.map((article, i) => {
-          return (
-            <View key={i}>
-              <Card
-                containerStyle={{padding: 0}}
-                title={article.source.name}
-                image={{uri:article.urlToImage}}>
-                {
-                  loadingOptions ? <ActivityIndicator size="large" color="#0000ff" />
-                    : options && options.map((opt, index) => {
-                      return <CheckBox key={index} title={opt} checked={checked === opt}
-                        onPress={() => this.setChecked(opt)}/>})
-                }
-                <GradientButton
-                  rkType='large'
-                  style={styles.button}
-                  text="GUESS"
-                  onPress={() => {this.handleGuess()}}/>
-                <Button title="Link" onPress={() => {
-                  Linking.canOpenURL(article.url).then(supported => {
-                    if (supported) {
-                      Linking.openURL(article.url);
-                    } else {
-                      this.props.setError('Url link is unsupported!');
-                    }
-                  });
-                }} />
-              </Card>
-            </View>)
-        })}
-      </Swiper>
+      <View style={{ flex: 1}}>
+        <ModalMessage userPoints={this.props.userPoints} />
+        <Swiper loop={false} onIndexChanged={this.onSwipe} showsButtons>
+          {articles && articles.map((article, i) => {
+            return (
+              <View key={i}>
+                <Card
+                  containerStyle={{padding: 0}}
+                  title={article.source.name}
+                  image={{uri:article.urlToImage}}>
+                  {
+                    loadingOptions ? <ActivityIndicator size="large" color="#0000ff" />
+                      : options && options.map((opt, index) => {
+                        return <CheckBox disabled={guessed} key={index} title={opt} checked={checked === opt}
+                          onPress={() => this.setChecked(opt)}/>})
+                  }
+                  <GradientButton
+                    disabled={checked === null}
+                    rkType='large'
+                    style={styles.button}
+                    text="GUESS"
+                    onPress={() => {this.handleGuess()}}/>
+                  {guessed && <Button title="Link" onPress={() => {
+                    Linking.canOpenURL(article.url).then(supported => {
+                      if (supported) {Linking.openURL(article.url)}
+                      else {this.props.setError('Url link is unsupported!')}
+                    });
+                  }}/>}
+                </Card>
+              </View>)
+          })}
+        </Swiper>
+      </View>
     )
   }
 }
@@ -167,12 +163,12 @@ let styles = RkStyleSheet.create(theme => ({
 </View>
 */
 
-const mapStateToProps = ({newsData, auth}) => {
+const mapStateToProps = ({newsData, auth, userData}) => {
   const { options, articles, category } = newsData;
-  const { user } = auth;
-  return { options, articles, category, auth, user };
+  const { userPoints, userDetails} = userData;
+  return { options, articles, category, auth, userPoints, userDetails };
 };
 
 export default connect(mapStateToProps, {
-  setError, getArticles, getOptions, addPoints, minusPoints
+  setError, getArticles, getOptions, addPoints, minusPoints, errorSet, userPointsFetch
 })(Game_Screen);

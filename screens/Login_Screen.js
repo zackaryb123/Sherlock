@@ -20,14 +20,8 @@ class Login_Screen extends Component {
   componentDidUpdate(prevProps, prevState, snapshot) {
     console.log('-----LOGIN SCREEN UPDATED----------');
     firebase.auth().onAuthStateChanged((auth) => {
-      if (auth) {
-        NavigatorService.reset('main_screen');
-      } else {
-      }
+      if (auth) { NavigatorService.reset('main_screen') }
     });
-    // if (this.props.loginStatus === 'loggedin') {
-    //   NavigatorService.reset('main_screen');
-    // }
   }
 
   render() {
