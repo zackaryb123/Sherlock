@@ -10,12 +10,6 @@ import {
 import {GradientButton} from './../components/';
 import Ticker from './ticker';
 
-function getRandom(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive
-}
-
 class ModalMessage extends Component {
   constructor(props) {
     super(props);
@@ -83,7 +77,6 @@ class ModalMessage extends Component {
   }
 }
 
-
 const styles = {
   modalContent: {
     backgroundColor: 'white',
@@ -114,9 +107,8 @@ const styles = {
     fontSize: 80,
     color: "#333",
     textAlign: 'center',
-  },
+  }
 };
-
 
 const mapStateToProps = ({ auth }) => {
   const { error } = auth;

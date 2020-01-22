@@ -76,7 +76,6 @@ class Game_Screen extends Component {
   handleGuess() {
     const { answer, checked } = this.state;
     const { auth } = this.props;
-
     if (answer === checked) {
       this.props.addPoints(auth.uid, 10);
       this.props.errorSet('Correct!!');
@@ -88,7 +87,7 @@ class Game_Screen extends Component {
   }
 
   render() {
-    const { loadingOptions, articles, options, checked, guessed } = this.state;
+    const { loadingOptions, articles, options, checked, guessed, swipeIndex } = this.state;
     if (!articles) return <View style={[styles.container, styles.horizontal]}><ActivityIndicator size="large" color="#0000ff" /></View>;
     return (
       <View style={{ flex: 1}}>
@@ -103,12 +102,12 @@ class Game_Screen extends Component {
                   image={{uri:article.urlToImage}}>
                   {
                     loadingOptions ? <ActivityIndicator size="large" color="#0000ff" />
-                      : options && options.map((opt, index) => {
-                        return <CheckBox disabled={guessed} key={index} title={opt} checked={checked === opt}
-                          onPress={() => this.setChecked(opt)}/>})
+                      : swipeIndex === i && options && options.map((opt, index) => {
+                        return <CheckBox disabled={guessed} key={index} title={opt} checked={checked === opt} onPress={() => this.setChecked(opt)}/>
+                      })
                   }
                   <GradientButton
-                    disabled={checked === null}
+                    disabled={checked === null || guessed}
                     rkType='large'
                     style={styles.button}
                     text="GUESS"
@@ -150,18 +149,6 @@ let styles = RkStyleSheet.create(theme => ({
     padding: 10
   }
 }));
-
-/*
-<View>
-  <Button
-    large
-    title="Log out"
-    backgroundColor="#00aced"
-    icon={{ type: 'font-awesome', color: "#ffffff", name: 'sign-out' }}
-    onPress={ () => this.props.navigation.navigate('location_screen') }
-  />
-</View>
-*/
 
 const mapStateToProps = ({newsData, auth, userData}) => {
   const { options, articles, category } = newsData;

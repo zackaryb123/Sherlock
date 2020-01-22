@@ -56,6 +56,14 @@ export const minusPoints = (uid, newPoints) => async dispatch => {
     return await firebase.database().ref(`users/${currentUser.uid}`).update({points})
   } else {
     dispatch(setUserPoints(0));
-    return firebase.database().ref(`users/${currentUser.uid}/points`).set(0)
+    return firebase.database().ref(`users/${currentUser.uid}/points`).set(0);
   }
+};
+
+export const searchUsers = (query, limitT) => async dispatch => {
+
+  let users = firebase.database().ref(`users`).once('value').then((snapshot) => {
+    if (snapshot.exists()) {return snapshot.val()}
+  });
+
 };

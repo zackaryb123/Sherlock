@@ -75,7 +75,6 @@ export const getOptions = (keyValues, answer) => dispatch => {
     .then((resJson) => {
       let options = [];
       resJson.articles.some((article, index) => {
-        console.log("NUM ARTICLES: ", article.length);
         if (article.title) options.push(article.title);
         if (options.length === 4) return true;
       });

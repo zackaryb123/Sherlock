@@ -1,5 +1,4 @@
 import firebase from 'firebase';
-
 import {
   EMAIL_CHANGED,
   PASSWORD_CHANGED,
@@ -18,8 +17,6 @@ import {
   ERROR_SET,
   RESET_USER
 } from './types';
-
-import NavigatorService from './../utils/navigator';
 
 export const errorSet = (text) => {
   return {
@@ -93,7 +90,6 @@ export const loadWelcomeChanged = (text) => {
   };
 };
 
-
 export const loginUserFail = (err_message) => dispatch => {
   dispatch({
     type: LOGIN_USER_FAIL,
@@ -111,7 +107,6 @@ export const loginUserSuccess = (user) => dispatch => {
 export const setError = (message) => dispatch => {
   dispatch(errorSet(message));
 };
-
 
 export const loginUser = ({ email, password }) => {
   return async (dispatch) => {
@@ -132,16 +127,15 @@ export const loginUser = ({ email, password }) => {
 
 export const resetUser = ({ email }) => {
   return async (dispatch) => {
-      try {
-        await firebase.auth().sendPasswordResetEmail(email);
-        dispatch(errorSet('Reset Email Sent'));
-      } catch (error) {
-        console.log(error);
-        let err_message = error.message;
-        dispatch(errorSet(err_message));
-      }
+    try {
+      await firebase.auth().sendPasswordResetEmail(email);
+      dispatch(errorSet('Reset Email Sent'));
+    } catch (error) {
+      console.log(error);
+      let err_message = error.message;
+      dispatch(errorSet(err_message));
+    }
   };
-
 };
 
 export const logoutUser = () => {
@@ -156,7 +150,6 @@ export const logoutUser = () => {
       dispatch(loginStatusChanged('loggedin'));
     }
   };
-
 };
 
 export const signupUser = ({ email, password, phone, firstname, lastname  }) => {
@@ -164,17 +157,18 @@ export const signupUser = ({ email, password, phone, firstname, lastname  }) => 
     dispatch(loginStatusChanged('checking'));
     dispatch({ type: SIGNUP_USER });
     let displayName = firstname + ' ' + lastname;
+    let db = firebase.firestore();
+    let searchQuery = [displayName, email];
 
     try {
       let user = await firebase.auth().createUserWithEmailAndPassword(email, password);
-      let uid = user.user.uid;
       user.user.displayName = displayName;
-      firebase.database().ref(`/users/${user.user.uid}/userDetails`).set({
-        email, phone, firstname, lastname, displayName
-      });
-      // firebase.database().ref(`/userids/${email}`).set({
-      //   uid
+      // firebase.database().ref(`/users/${user.user.uid}/userDetails`).set({
+      //   email, phone, firstname, lastname, displayName
       // });
+      db.collection('users').doc(user.user.uid).set({
+        email, phone, firstname, lastname, displayName, searchQuery
+      }).catch(err => console.log(err));
       dispatch(loginUserSuccess(user));
       dispatch(loginStatusChanged('notloggedin'));
       dispatch(errorSet('Welcome to Sherlock!'));
@@ -182,24 +176,21 @@ export const signupUser = ({ email, password, phone, firstname, lastname  }) => 
       console.log("FAIL: ", error);
       loginUserFail(dispatch);
     }
-
   };
 };
 
-// Get message from firebase and do the reset
 export const authStateChanged = () => {
   return async ( dispatch ) => {
     firebase.auth().onAuthStateChanged((user) => {
       console.log("USER: ", user);
-        if (user) {
-          console.log('Authactions: Line 260: Dispatched loggedin');
-          dispatch(loginUserSuccess(user));
-          dispatch(loginStatusChanged('loggedin'));
-        } else {
-         console.log('Authactions: Line 216: Dispatched not loggedin');
-         dispatch(loginStatusChanged('notloggedin'));
-        }
-      });
+      if (user) {
+        console.log('Authentication: Line 260: Dispatched loggedin');
+        dispatch(loginUserSuccess(user));
+        dispatch(loginStatusChanged('loggedin'));
+      } else {
+        console.log('Authentication: Line 216: Dispatched not loggedin');
+        dispatch(loginStatusChanged('notloggedin'));
+      }
+    });
   }
-
 };
