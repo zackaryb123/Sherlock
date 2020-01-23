@@ -1,4 +1,5 @@
 import firebase from 'firebase';
+import '@firebase/firestore';
 import {
   EMAIL_CHANGED,
   PASSWORD_CHANGED,
@@ -117,7 +118,7 @@ export const loginUser = ({ email, password }) => {
       dispatch(loginUserSuccess(user));
       dispatch(loginStatusChanged('loggedin'));
     } catch (error) {
-      console.log(error);
+      console.log("Login Error: ", error);
       let err_message = error.message;
       dispatch(loginUserFail(err_message));
       dispatch(loginStatusChanged('notloggedin'));
@@ -157,18 +158,17 @@ export const signupUser = ({ email, password, phone, firstname, lastname  }) => 
     dispatch(loginStatusChanged('checking'));
     dispatch({ type: SIGNUP_USER });
     let displayName = firstname + ' ' + lastname;
-    let db = firebase.firestore();
     let searchQuery = [displayName, email];
+    let points = 0;
 
     try {
       let user = await firebase.auth().createUserWithEmailAndPassword(email, password);
       user.user.displayName = displayName;
-      // firebase.database().ref(`/users/${user.user.uid}/userDetails`).set({
-      //   email, phone, firstname, lastname, displayName
-      // });
-      db.collection('users').doc(user.user.uid).set({
-        email, phone, firstname, lastname, displayName, searchQuery
+
+      firebase.firestore().collection('users').doc(user.user.uid).set({
+        email, phone, firstname, lastname, displayName, searchQuery, points
       }).catch(err => console.log(err));
+
       dispatch(loginUserSuccess(user));
       dispatch(loginStatusChanged('notloggedin'));
       dispatch(errorSet('Welcome to Sherlock!'));
@@ -180,7 +180,7 @@ export const signupUser = ({ email, password, phone, firstname, lastname  }) => 
 };
 
 export const authStateChanged = () => {
-  return async ( dispatch ) => {
+  return ( dispatch ) => {
     firebase.auth().onAuthStateChanged((user) => {
       console.log("USER: ", user);
       if (user) {

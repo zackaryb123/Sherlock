@@ -74,6 +74,7 @@ class Game_Screen extends Component {
   };
 
   handleGuess() {
+    console.log('Guess');
     const { answer, checked } = this.state;
     const { auth } = this.props;
     if (answer === checked) {

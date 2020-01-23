@@ -67,8 +67,6 @@ class Settings_Screen extends Component {
 
   componentWillMount() {
     this.props.userDetailsFetch();
-    console.log('userdetails');
-    console.log(this.props.userdetails);
     if ( this.props.userdetails ) {
       const {myfirstname} = this.props.userdetails;
       this.setState({ firstName: myfirstname });
@@ -87,9 +85,6 @@ class Settings_Screen extends Component {
         NavigatorService.reset('login_screen');
       }
     });
-    // if (this.props.loginStatus === 'notloggedin') {
-    //   NavigatorService.reset('login_screen');
-    // }
   }
 
   render() {

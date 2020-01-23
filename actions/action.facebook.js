@@ -1,6 +1,7 @@
 // import { AsyncStorage } from 'react-native';
 import { Facebook } from 'expo';
 import firebase from 'firebase';
+import '@firebase/firestore';
 import { fbappid } from './../config/auth';
 // import { emailChanged, passwordChanged, signupUser } from '../actions';
 
@@ -48,16 +49,17 @@ export const facebookSignin = () => {
       try {
 
         let user = await firebase.auth().signInWithCredential(credential);
-        let emailcheck = await firebase.database().ref(`/users/${user.uid}/userDetails/email`).once('value');
+        let emailcheck = await firebase.firestore().collection('users').doc(user.uid).get();
+        console.log('emailCheck: ', emailcheck);
         var emailcheckflag = emailcheck.val();
 
         if (emailcheckflag) {
           // update user properties to firebase
-          firebase.database().ref(`/users/${user.uid}/userDetails`).update({
+          firebase.firestore().collection('users').doc(user.uid).update({
             fbEmail: user.email,
             fbDisplayName: user.displayName,
             fbPhotoURL: user.photoURL
-          });
+          })
 
         }
 
@@ -123,7 +125,7 @@ export const facebookSignup = ({ email, phone, firstname, lastname  }) => {
         console.log(email);
         console.log(displayName);
         // write user properties to firebase
-        firebase.database().ref(`/users/${user.uid}/userDetails`).set({
+        firebase.firestore().collection('users').doc(user.uid).set({
           email: email,
           phone: phone,
           firstname: firstname,

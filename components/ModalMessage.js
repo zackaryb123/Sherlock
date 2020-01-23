@@ -44,18 +44,20 @@ class ModalMessage extends Component {
         <View style={[styles.row, wrapStyle]}>
           {ticks}
         </View>
-        <Text style={[styles.text, styles.measure]} onLayout={this.handleLayout}>0</Text>
+        <Text style={[styles.text, styles.measure]} onLayout={this.handleLayout}/>
       </View>)
   };
 
   renderModalContent = () => {
     const {userPoints} = this.props;
+    console.log(userPoints);
+
     return(
       <View style={styles.modalContent}>
         <View style={{marginTop: 10, marginLeft: 5, marginRight: 5, marginBottom: 25}}>
           <RkText rkType='header6' > {this.props.error} </RkText>
         </View>
-        {userPoints && this.renderTicker()}
+        {userPoints === 0 || userPoints && this.renderTicker()}
         <GradientButton onPress={ () => this.props.errorSet('') } rkType='medium' text='Close'/>
       </View>)
   };
