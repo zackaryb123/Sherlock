@@ -81,7 +81,7 @@ class Home_Screen extends Component {
   }
 
   clickEventListener = (category) => {
-    Alert.alert('Message', 'Item clicked. '+category.name);
+    Alert.alert('Message', 'Item clicked. ', category.name);
   };
 
   render() {

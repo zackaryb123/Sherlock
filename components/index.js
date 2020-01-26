@@ -3,7 +3,7 @@ export * from './gradientButton/index';
 export * from './paginationIndicator';
 export * from './socialBar';
 export * from './linking';
-
+export * from './searchBar';
 /*
 export * from './charts';
 

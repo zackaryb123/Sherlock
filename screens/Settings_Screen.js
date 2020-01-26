@@ -25,7 +25,7 @@ import { logoutUser, userDetailsFetch } from '../actions';
 
 import users from '../config/data/raw/users';
 import {Avatar} from './../components';
-import {GradientButton} from './../components/';
+import {GradientButton, BarSearch} from './../components/';
 import {FontAwesome} from './../assets/icons';
 import LoadingSpinner from './../components/Loading/LoadingSpinner';
 import NavigatorService from './../utils/navigator';
@@ -96,6 +96,7 @@ class Settings_Screen extends Component {
     if (!userdetails) return <View style={[styles.container, styles.horizontal]}><ActivityIndicator size="large" color="#0000ff" /></View>;
     return (
         <View style={styles.container}>
+          <BarSearch/>
           <Image style={styles.avatar} source={{uri: 'https://bootdey.com/img/Content/avatar/avatar6.png'}}/>
           <View style={styles.body}>
             <View style={styles.bodyContent}>
