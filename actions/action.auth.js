@@ -163,10 +163,13 @@ export const signupUser = ({ email, password, phone, firstname, lastname  }) => 
 
     try {
       let user = await firebase.auth().createUserWithEmailAndPassword(email, password);
+      let uid = user.user.uid;
+      let bio = "";
+      let avatar = 'https://bootdey.com/img/Content/avatar/avatar6.png';
       user.user.displayName = displayName;
 
       firebase.firestore().collection('users').doc(user.user.uid).set({
-        email, phone, firstname, lastname, displayName, searchQuery, points
+        uid, email, phone, firstname, lastname, displayName, searchQuery, points, bio, avatar
       }).catch(err => console.log(err));
 
       dispatch(loginUserSuccess(user));

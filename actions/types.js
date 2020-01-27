@@ -23,6 +23,7 @@ export const FACEBOOK_LOGIN_FAIL = 'facebook_login_fail';
 /*User Action*/
 export const USERDETAILS_FETCH_SUCCESS = 'userdetails_fetch_success';
 export const SET_USER_POINTS = 'ADD_USER_POINTS';
+export const USER_SEARCH_FETCH_SUCCESS = 'USER_SEARCH_FETCH_SUCCESS';
 
 /*News Action*/
 export const SET_NEWS_HEADLINES = 'SET_NEWS_HEADLINES';

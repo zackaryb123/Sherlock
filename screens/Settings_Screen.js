@@ -20,42 +20,22 @@ import {
 
 import { Header } from 'react-navigation';
 import { Button } from 'react-native-elements';
-import { logoutUser, userDetailsFetch } from '../actions';
+import { logoutUser, userDetailsFetch, setError } from '../actions';
 
 
 import users from '../config/data/raw/users';
 import {Avatar} from './../components';
-import {GradientButton, BarSearch} from './../components/';
+import {GradientButton, BarSearch, BarSearchDropdown} from './../components/';
 import {FontAwesome} from './../assets/icons';
 import LoadingSpinner from './../components/Loading/LoadingSpinner';
 import NavigatorService from './../utils/navigator';
-
-
-
-// FontAwesome.cog
+import {errorSet} from "../actions/action.auth";
+import ModalMessage from "../components/ModalMessage";
 
 class Settings_Screen extends Component {
-
-  // Donot show header
-  static navigationOptions = {
-    headerTitle: 'Profile Settings',
-    tabBarIcon: ({ tintColor }) => (
-      <RkText
-        rkType='awesome'
-        style={{
-          color: tintColor,
-          fontSize: 24,
-          marginBottom: 0,
-        }}>
-          {FontAwesome.cog}
-      </RkText>
-    ),
-  };
-
   constructor(props) {
     super(props);
     this.user = users[0];
-    console.log(this.user);
 
     this.state = {
       firstName: this.user.firstName,
@@ -73,42 +53,40 @@ class Settings_Screen extends Component {
     }
   }
 
-  componentDidMount() {
-    console.log('-----SETTING SCREEN MOUNTED----------');
-  }
-
   componentDidUpdate(prevProps, prevState, snapshot) {
     firebase.auth().onAuthStateChanged((auth) => {
-      if (auth) {
-
-      } else {
+      if (!auth) {
         NavigatorService.reset('login_screen');
       }
     });
+    if (this.props.userSearch) {
+      this.props.errorSet(this.props.userSearch.name);
+    }
   }
 
   render() {
-    console.log('userdetails');
-    console.log(this.props.userdetails);
-    console.log('RkTheme.current.colors.accent = ' + RkTheme.current.colors.acc);
-    console.log('RkTheme.current.colors.alterBackground = ' + RkTheme.current.colors.alterBackground);
-    const {userdetails} = this.props;
+    console.log('userdetails: ', this.props.userdetails);
+    console.log('userSearch: ', this.props.userSearch);
+    // console.log('RkTheme.current.colors.accent = ' + RkTheme.current.colors.acc);
+    // console.log('RkTheme.current.colors.alterBackground = ' + RkTheme.current.colors.alterBackground);
+    const {userdetails, userSearch} = this.props;
     if (!userdetails) return <View style={[styles.container, styles.horizontal]}><ActivityIndicator size="large" color="#0000ff" /></View>;
     return (
         <View style={styles.container}>
-          <BarSearch/>
-          <Image style={styles.avatar} source={{uri: 'https://bootdey.com/img/Content/avatar/avatar6.png'}}/>
+          <ModalMessage userSearch={userSearch} />
+          <BarSearchDropdown/>
+          <Image style={styles.avatar} source={{uri: userdetails.avatar}}/>
           <View style={styles.body}>
             <View style={styles.bodyContent}>
               <Text style={styles.name}>{userdetails.firstname}</Text>
               <Text style={styles.info}>{userdetails.email}</Text>
-              <Text style={styles.description}>Lorem ipsum dolor sit amet, saepe sapientem eu nam. Qui ne assum electram expetendis, omittam deseruisse consequuntur ius an,</Text>
-              <TouchableOpacity style={styles.buttonContainer}>
-                <Text>Opcion 1</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.buttonContainer}>
-                <Text>Opcion 2</Text>
-              </TouchableOpacity>
+              <Text style={styles.description}>{userdetails.bio}</Text>
+              {/*<TouchableOpacity style={styles.buttonContainer}>*/}
+                {/*<Text>Opcion 1</Text>*/}
+              {/*</TouchableOpacity>*/}
+              {/*<TouchableOpacity style={styles.buttonContainer}>*/}
+                {/*<Text>Opcion 2</Text>*/}
+              {/*</TouchableOpacity>*/}
               <GradientButton
                 rkType='large'
                 style={styles.button}
@@ -124,7 +102,7 @@ class Settings_Screen extends Component {
 
 let styles = RkStyleSheet.create(theme => ({
   container: {
-    flex: 1,
+    // flex: 1,
     justifyContent: 'center'
   },
   horizontal: {
@@ -151,7 +129,7 @@ let styles = RkStyleSheet.create(theme => ({
     borderColor: "white",
     marginBottom:10,
     alignSelf:'center',
-    marginTop:10
+    marginTop:20
   },
   // name:{
   //   fontSize:22,
@@ -195,11 +173,11 @@ let styles = RkStyleSheet.create(theme => ({
 }));
 
 const mapStateToProps = ({ userData, auth }) => {
-  const { userdetails } = userData;
+  const { userdetails, userSearch } = userData;
   const {loginStatus } = auth;
-  return { userdetails, loginStatus };
+  return { userdetails, userSearch, loginStatus };
 };
 
 export default connect(mapStateToProps, {
-  logoutUser, userDetailsFetch
+  logoutUser, userDetailsFetch, errorSet
 })(Settings_Screen);

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, Platform, Animated } from 'react-native';
+import {View, Text, Platform, Animated, Image} from 'react-native';
 import Modal from 'react-native-modal';
 import { connect } from 'react-redux';
-import { errorSet } from '../actions';
+import { errorSet, setUserSearch } from '../actions';
 import { Button } from 'react-native-elements';
 import {
   RkText
@@ -48,17 +48,35 @@ class ModalMessage extends Component {
       </View>)
   };
 
-  renderModalContent = () => {
-    const {userPoints} = this.props;
-    console.log(userPoints);
+  renderSearchDetails = () => {
+    const {userSearch} = this.props;
+    return (
+      <View style={styles.container}>
+        <Image style={styles.avatar} source={{uri: userSearch.avatar}}/>
+        <Text>{userSearch.name}</Text>
+        <Text>{userSearch.uid}</Text>
+      </View>
+    )
+  };
 
+  handleOnClose = () => {
+    this.props.errorSet('');
+    const {userPoints, userSearch} = this.props;
+    if (userSearch) {
+      this.props.setUserSearch(null);
+    }
+  };
+
+  renderModalContent = () => {
+    const {userPoints, userSearch} = this.props;
     return(
       <View style={styles.modalContent}>
         <View style={{marginTop: 10, marginLeft: 5, marginRight: 5, marginBottom: 25}}>
           <RkText rkType='header6' > {this.props.error} </RkText>
         </View>
         {userPoints === 0 || userPoints && this.renderTicker()}
-        <GradientButton onPress={ () => this.props.errorSet('') } rkType='medium' text='Close'/>
+        {userSearch && this.renderSearchDetails()}
+        <GradientButton onPress={ this.handleOnClose } rkType='medium' text='Close'/>
       </View>)
   };
 
@@ -109,7 +127,17 @@ const styles = {
     fontSize: 80,
     color: "#333",
     textAlign: 'center',
-  }
+  },
+  avatar: {
+    width: 130,
+    height: 130,
+    borderRadius: 63,
+    borderWidth: 4,
+    borderColor: "white",
+    marginBottom:10,
+    alignSelf:'center',
+    marginTop:20
+  },
 };
 
 const mapStateToProps = ({ auth }) => {
@@ -118,5 +146,5 @@ const mapStateToProps = ({ auth }) => {
 };
 
 export default connect(mapStateToProps, {
-  errorSet
+  errorSet, setUserSearch
 })(ModalMessage);

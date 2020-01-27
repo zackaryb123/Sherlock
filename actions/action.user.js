@@ -3,7 +3,8 @@ import '@firebase/firestore';
 
 import {
   SET_USER_POINTS,
-  USERDETAILS_FETCH_SUCCESS
+  USERDETAILS_FETCH_SUCCESS,
+  USER_SEARCH_FETCH_SUCCESS
 } from './types';
 
 export const setUserPoints = (points) => dispatch => {
@@ -17,6 +18,13 @@ export const setUserData = (user) => dispatch => {
   dispatch({
     type: USERDETAILS_FETCH_SUCCESS,
     payload: user
+  })
+};
+
+export const setUserSearch = (users) => dispatch => {
+  dispatch({
+    type: USER_SEARCH_FETCH_SUCCESS,
+    payload: users
   })
 };
 
@@ -79,11 +87,4 @@ export const minusPoints = (uid, newPoints) => async dispatch => {
     dispatch(setUserPoints(0));
     return await firebase.firestore().collection('users').doc(currentUser.uid).update({points});
   }
-};
-
-export const searchUsers = (query, limitT) => async dispatch => {
-  let users = firebase.database().ref(`users`).once('value').then((snapshot) => {
-    if (snapshot.exists()) {return snapshot.val()}
-  });
-
 };
