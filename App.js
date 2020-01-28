@@ -29,6 +29,7 @@ import Settings_Screen from './screens/Settings_Screen';
 import Game_Screen from "./screens/Game_Screen";
 import rootReducer from "./reducers";
 import loadAssetsAsync from "./utils/loadFonts";
+import {BarSearchFlatList} from "./components";
 
 const config = {
   key: 'root',

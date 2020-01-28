@@ -80,28 +80,21 @@ class Settings_Screen extends Component {
   }
 
   render() {
-    console.log('userdetails: ', this.props.userdetails);
-    console.log('userSearch: ', this.props.userSearch);
-    // console.log('RkTheme.current.colors.accent = ' + RkTheme.current.colors.acc);
-    // console.log('RkTheme.current.colors.alterBackground = ' + RkTheme.current.colors.alterBackground);
+    // console.log('userdetails: ', this.props.userdetails);
+    // console.log('userSearch: ', this.props.userSearch);
     const {userdetails, userSearch} = this.props;
     if (!userdetails) return <View style={[styles.container, styles.horizontal]}><ActivityIndicator size="large" color="#0000ff" /></View>;
     return (
         <View style={styles.container}>
-          <ModalMessage userSearch={userSearch} />
-          {/*<BarSearchDropdown/>*/}
           <BarSearchFlatList/>
-          <Image style={styles.avatar} source={{uri: userdetails.avatar}}/>
           <View style={styles.body}>
+            <Image style={styles.avatar} source={{uri: userdetails.avatar}}/>
             <View style={styles.bodyContent}>
               <Text style={styles.name}>{userdetails.firstname}</Text>
               <Text style={styles.info}>{userdetails.email}</Text>
               <Text style={styles.description}>{userdetails.bio}</Text>
               {/*<TouchableOpacity style={styles.buttonContainer}>*/}
                 {/*<Text>Opcion 1</Text>*/}
-              {/*</TouchableOpacity>*/}
-              {/*<TouchableOpacity style={styles.buttonContainer}>*/}
-                {/*<Text>Opcion 2</Text>*/}
               {/*</TouchableOpacity>*/}
               <GradientButton
                 rkType='large'
@@ -111,6 +104,7 @@ class Settings_Screen extends Component {
               />
             </View>
           </View>
+          <ModalMessage userSearch={userSearch} />
         </View>
     );
   }
@@ -118,8 +112,6 @@ class Settings_Screen extends Component {
 
 let styles = RkStyleSheet.create(theme => ({
   container: {
-    // flex: 1,
-    justifyContent: 'center'
   },
   horizontal: {
     flexDirection: 'row',
@@ -131,11 +123,11 @@ let styles = RkStyleSheet.create(theme => ({
   },
   button: {
     marginHorizontal: 16,
-    marginBottom: 32
+    marginTop: 10,
   },
   header:{
     backgroundColor: "#00BFFF",
-    height:200,
+    height: 200,
   },
   avatar: {
     width: 130,
@@ -147,13 +139,8 @@ let styles = RkStyleSheet.create(theme => ({
     alignSelf:'center',
     marginTop:20
   },
-  // name:{
-  //   fontSize:22,
-  //   color:"#FFFFFF",
-  //   fontWeight:'600',
-  // },
   body:{
-    marginTop:40,
+    marginTop:0,
   },
   bodyContent: {
     alignItems: 'center',

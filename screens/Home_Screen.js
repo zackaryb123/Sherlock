@@ -56,7 +56,6 @@ class Home_Screen extends Component {
 
   componentDidMount() {
     console.log('-----HOME SCREEN MOUNTED----------');
-    console.log(this.props.loginStatus);
   }
 
   handleCategorySelect(category) {
