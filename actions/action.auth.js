@@ -158,7 +158,7 @@ export const signupUser = ({ email, password, phone, firstname, lastname  }) => 
     dispatch(loginStatusChanged('checking'));
     dispatch({ type: SIGNUP_USER });
     let displayName = firstname + ' ' + lastname;
-    let searchQuery = [displayName, email];
+    let searchQuery = [displayName, email, phone];
     let points = 0;
 
     try {

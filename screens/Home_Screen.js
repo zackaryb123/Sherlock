@@ -30,7 +30,7 @@ import NavigatorService from "../utils/navigator";
 class Home_Screen extends Component {
 
   static navigationOptions = {
-    headerTitle: 'Items',
+    headerTitle: 'Categories',
     tabBarLabel: 'Home',
     tabBarIcon: ({ tintColor }) => (
       <RkText

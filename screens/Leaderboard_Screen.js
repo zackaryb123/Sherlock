@@ -8,7 +8,7 @@ import {FontAwesome} from "../assets/icons";
 
 class Leaderboard_Screen extends Component {
   static navigationOptions = {
-    headerTitle: 'Orders',
+    headerTitle: 'Leaderboards',
     tabBarIcon: ({tintColor}) => (
       <RkText
         rkType='awesome'

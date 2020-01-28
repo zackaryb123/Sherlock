@@ -1,3 +1,5 @@
+import BarSearchFlatList from "./searchBar/BarSearchFlatList";
+
 export * from './avatar';
 export * from './gradientButton/index';
 export * from './paginationIndicator';
@@ -5,6 +7,7 @@ export * from './socialBar';
 export * from './linking';
 export BarSearch from './searchBar/BarSearch';
 export BarSearchDropdown from './searchBar/BarSearchDropdown';
+export BarSearchFlatList from './searchBar/BarSearchFlatList';
 /*
 export * from './charts';
 

@@ -10,14 +10,13 @@ class BarSearchDropdown extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedItems: [],
       items: []
     }
   }
 
-  handleOnTextChange = search => {
+  handleOnTextChange = async search => {
     if (this.state.timeout) clearTimeout(this.state.timeout);
-    this.state.timeout = setTimeout(() => {
+    this.state.timeout = await setTimeout(() => {
       console.log('Searching... ', search);
       firebase.firestore().collection('users').where('searchQuery', 'array-contains', search).get().then(users => {
         let index = 1;
@@ -28,7 +27,7 @@ class BarSearchDropdown extends React.Component {
           index++;
         });
         console.log('USERS: ', userList);
-        this.setState({items: userList})
+        this.setState({items: userList});
       });
     }, 3000);
     this.setState({ search });
@@ -42,16 +41,12 @@ class BarSearchDropdown extends React.Component {
   };
 
   render() {
+    console.log("ITEMS: ", this.state.items);
     return (
       <Fragment>
-
         <SearchableDropdown
           onItemSelect={(item) => this.handleOnItemSelect(item)}
           containerStyle={{ padding: 5 }}
-          onRemoveItem={(item, index) => {
-            const items = this.state.selectedItems.filter((sitem) => sitem.id !== item.id);
-            this.setState({ selectedItems: items });
-          }}
           itemStyle={{
             padding: 10,
             marginTop: 2,
@@ -63,8 +58,7 @@ class BarSearchDropdown extends React.Component {
           itemTextStyle={{ color: '#222' }}
           itemsContainerStyle={{ maxHeight: 140 }}
           items={this.state.items}
-          defaultIndex={2}
-          resetValue={false}
+          resetValue={true}
           textInputProps={
             {
               placeholder: "Search Friends (name, email, phone)...",
@@ -74,10 +68,10 @@ class BarSearchDropdown extends React.Component {
                 borderWidth: 1,
                 borderColor: '#ccc',
                 borderRadius: 5,
-              },
-              onTextChange: text => this.handleOnTextChange(text)
+              }
             }
           }
+          onTextChange={text => this.handleOnTextChange(text)}
           listProps={{ nestedScrollEnabled: true }}
         />
       </Fragment>
