@@ -9,6 +9,7 @@ import {
 } from 'react-native-ui-kitten';
 import {GradientButton} from './../components/';
 import Ticker from './ticker';
+import ToggleFriend from "./toggle/ToggleFriend";
 
 class ModalMessage extends Component {
   constructor(props) {
@@ -53,6 +54,7 @@ class ModalMessage extends Component {
     return (
       <View style={styles.container}>
         <Image style={styles.avatar} source={{uri: userSearch.avatar}}/>
+        <ToggleFriend userSearch={userSearch}/>
         <Text>{userSearch.name}</Text>
         <Text>{userSearch.uid}</Text>
       </View>

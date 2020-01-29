@@ -56,12 +56,16 @@ class BarSearchFlatList extends Component {
   handleOnItemSelect = async (item) => {
     console.log("ITEM: ", item);
     console.log("DATA: ", this.state.data);
-    let selectedUser = this.state.data.map(user => {
-      if (user.uid === item.uid) return user;
-    });
-    console.log("SELECTED USER: ", selectedUser[0]);
+    let selectedUser = this.state.data.filter(user => user.uid === item.uid);
+    console.log("SELECTED USER ONE: ", selectedUser[0]);
     await this.props.setUserSearch(selectedUser[0]);
   };
+
+  componentWillUnmount() {
+    console.log('---------- BAR SEARCH UNMOUNTED ----------');
+    this.setState({data: []})
+  }
+
 
   render() {
     return (
