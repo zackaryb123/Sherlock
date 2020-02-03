@@ -25,7 +25,7 @@ import { logoutUser, userDetailsFetch, setError } from '../actions';
 
 import users from '../config/data/raw/users';
 import {Avatar} from './../components';
-import {GradientButton, BarSearch, BarSearchDropdown, BarSearchFlatList} from './../components/';
+import {GradientButton, BarSearch, BarSearchDropdown, BarSearchFlatList, HamburgerIcon} from './../components/';
 import {FontAwesome} from './../assets/icons';
 import LoadingSpinner from './../components/Loading/LoadingSpinner';
 import NavigatorService from './../utils/navigator';
@@ -33,19 +33,22 @@ import {errorSet} from "../actions/action.auth";
 import ModalMessage from "../components/ModalMessage";
 
 class Settings_Screen extends Component {
-  static navigationOptions = {
-    headerTitle: 'Profile',
-    tabBarIcon: ({ tintColor }) => (
-      <RkText
-        rkType='awesome'
-        style={{
-          color: tintColor,
-          fontSize: 24,
-          marginBottom: 0,
-        }}>
-          {FontAwesome.cog}
-      </RkText>
-    ),
+  static navigationOptions = () => {
+    return {
+      headerLeft: <HamburgerIcon/>,
+      headerTitle: 'Profile',
+      tabBarIcon: ({ tintColor }) => (
+        <RkText
+          rkType='awesome'
+          style={{
+            color: tintColor,
+            fontSize: 24,
+            marginBottom: 0,
+          }}>
+            {FontAwesome.cog}
+        </RkText>
+      ),
+    }
   };
 
   constructor(props) {

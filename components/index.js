@@ -1,4 +1,6 @@
 import BarSearchFlatList from "./searchBar/BarSearchFlatList";
+import HamburgerIcon from "./Navigators/HamburgerIcon";
+import HamburgerNav from "./Navigators/HamburgerNav";
 
 export * from './avatar';
 export * from './gradientButton/index';
@@ -8,6 +10,8 @@ export * from './linking';
 export BarSearch from './searchBar/BarSearch';
 export BarSearchDropdown from './searchBar/BarSearchDropdown';
 export BarSearchFlatList from './searchBar/BarSearchFlatList';
+export HamburgerIcon from './Navigators/HamburgerIcon';
+export HamburgerNav from './Navigators/HamburgerNav'
 /*
 export * from './charts';
 

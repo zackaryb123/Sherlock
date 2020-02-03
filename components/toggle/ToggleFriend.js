@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {View, Button} from 'react-native';
+import {View, Button, ActivityIndicator} from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
 import '@firebase/firestore';
@@ -9,17 +9,23 @@ class ToggleFriend extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      friendRequested: false
+      friendRequested: false,
+      loading: true
     }
   }
+
+  componentWillMount() {
+
+  }
+
 
   componentDidMount() {
     console.log('-------CDM TOGGLE FRIEND-------');
     const { currentUser } = firebase.auth();
     const { userSearch } = this.props;
     if (userSearch) {
-      firebase.firestore().collection('users').doc(userSearch.uid).get().then(user => {
-        this.setState({friendRequested: user.data().friendRequest.includes(currentUser.uid)})
+      firebase.firestore().collection('users').doc(userSearch.uid).collection('friendRequest').doc(currentUser.uid).get().then(user => {
+        this.setState({friendRequested: user.exists, loading: false})
       })
     }
   }
@@ -28,26 +34,31 @@ class ToggleFriend extends Component {
   toggleFriendRequest() {
     const {userSearch} = this.props;
     const { currentUser } = firebase.auth();
-    if (this.state.friendRequested) {
-      firebase.firestore().collection('users').doc(userSearch.uid).update({
-        friendRequest: firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
+    let uid = currentUser.uid;
+     this.setState({loading: true});
+     if (this.state.friendRequested) {
+       firebase.firestore().collection('users').doc(userSearch.uid).collection('friendRequest').doc(currentUser.uid).delete().then(() => {
+        this.setState({friendRequested: false, loading: false})
       });
-      this.setState({friendRequested: false})
     } else {
-      firebase.firestore().collection('users').doc(userSearch.uid).update({
-        friendRequest: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
+      firebase.firestore().collection('users').doc(userSearch.uid).collection('friendRequest').doc(currentUser.uid).set({uid}).then(() => {
+        this.setState({friendRequested: true, loading: false})
       });
-      this.setState({friendRequested: true})
     }
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <Button
-          onPress={() => this.toggleFriendRequest()}
-          title={ this.state.friendRequested ? 'Friend Requested' : 'Request Friend' }
-        />
+        {this.state.loading
+          ?
+          <ActivityIndicator size="large" color="#0000ff" />
+          :
+          <Button
+            color={this.state.friendRequested && '#787878'}
+            onPress={() => this.toggleFriendRequest()}
+            title={ this.state.friendRequested ? 'Friend Requested' : 'Request Friend' }/>
+        }
       </View>
     )
   }
