@@ -11,7 +11,7 @@
     "expo-font": "~7.0.0",
     "expo-linear-gradient": "~7.0.0",
     "firebase": "^5.3.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "mem": "^6.0.1",
     "metro": "^0.56.4",
     "mixin-deep": "^2.0.1",
