@@ -36,7 +36,7 @@
     "redux": "^4.0.0",
     "redux-persist": "^5.10.0",
     "redux-thunk": "^2.3.0",
-    "set-value": "^3.0.1",
+    "set-value": "^4.0.1",
     "validator": "^10.5.0",
     "ws": "^7.2.1"
   }
